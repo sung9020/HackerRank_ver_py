@@ -9,14 +9,26 @@ import sys
 # Complete the largestRectangle function below.
 def largestRectangle(h):
     k = 1
-    min_list = []
+    stack = []
+    rect = 0
+    for i in range(len(h)):
+        if i == 0:
+            stack.append(i)
+        elif h[stack[-1]] <= h[i]:
+            stack.append(i)
+        else:
+            temp = stack.pop()
+            if stack:
+                rect = max(rect, h[temp] * (i - stack[-1] - 1)) # right-1 - stack.top
+                stack.append(i)
 
-    while k <= len(h):
-        n_gram = tuple(zip(*[h[j:] for j in range(k)]))
-        min_list.extend(set([min(value) * k for value in n_gram]))
-        k += 1
-
-    return max(min_list)
+    while stack:
+        temp = stack.pop()
+        if stack:
+            rect = max(rect, h[temp] * (len(h) - stack[-1] - 1))
+        else:
+            rect = max(rect, h[temp] * (len(h) - 1))
+    return rect
 
 if __name__ == '__main__':
     n = int(input())
